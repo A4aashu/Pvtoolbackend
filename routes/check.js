@@ -21,7 +21,7 @@ router.get("/far/:tagNumber/:serialNumber", async (req, res) => {
                         "Reconciliation": '1',
                     },
                 );
-                res.send("Found_in_Far");
+                res.send("Found_in Far");
             }
             else
                 res.send("Not_Found");
