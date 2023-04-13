@@ -22,7 +22,7 @@ router.get("/far", async (req, res) => {
     try {
         const tagserialpv = await PvModel.findOne(query);
         if (tagserialpv) {
-            res.send("Already existed in PV");
+            res.send("Already existed in PV reconciled with Far");
         }
         else {
             const tagserialfar = await FarModel.findOne(query);
@@ -39,6 +39,28 @@ router.get("/far", async (req, res) => {
             else
                 res.send("Not Found in PV and FAR");
         }
+    } catch (error) {
+        res.status(500).send({ message: "Internal Server Error2" });
+    }
+});
+router.get("/pvcheck", async (req, res) => {
+    const tagNumber = req.query.tag;
+    const serialNumber = req.query.serial;
+    let query = {};
+    if (tagNumber && serialNumber) {
+        query = { $or: [{ "Tag Number": tagNumber }, { "Serial Number": serialNumber }] };
+    }
+    else if (tagNumber) {
+        query = { "Tag Number": tagNumber };
+    }
+    else if (serialNumber) {
+        query = { "Serial Number": serialNumber };
+    }
+
+    try {
+        const tagserialpv = await PvModel.findOne(query);
+        res.send(tagserialpv);
+
     } catch (error) {
         res.status(500).send({ message: "Internal Server Error2" });
     }
