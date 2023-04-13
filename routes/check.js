@@ -5,31 +5,45 @@ const FarModel = require("../models/far");
 const PvModel = require("../models/pv");
 
 
-router.get("/far/:tagNumber/:serialNumber", async (req, res) => {
-    const { tagNumber, serialNumber } = req.params;
+router.get("/far", async (req, res) => {
+    const tagNumber = req.query.tag;
+    const serialNumber = req.query.serial;
+    let query = {};
+    if (tagNumber && serialNumber) {
+        query = { $or: [{ "Tag Number": tagNumber }, { "Serial Number": serialNumber }] };
+    }
+    else if (tagNumber) {
+        query = { "Tag Number": tagNumber };
+    }
+    else if (serialNumber) {
+        query = { "Serial Number": serialNumber };
+    }
+
     try {
-        const tagserialpv = await PvModel.findOne({ $or: [{ "Tag Number": tagNumber }, { "Serial Number": serialNumber }] });
+        const tagserialpv = await PvModel.findOne(query);
         if (tagserialpv) {
-            res.send(tagserialpv);
+            res.send("Already existed in PV");
         }
         else {
-            const tagserialfar = await FarModel.findOne({ $or: [{ "Tag Number": tagNumber }, { "Serial no": serialNumber }] });
+            const tagserialfar = await FarModel.findOne(query);
             if (tagserialfar) {
                 const xyz1 = await FarModel.findByIdAndUpdate(
                     tagserialfar["_id"],
                     {
                         "Reconciliation": '1',
                     },
-                );
-                res.send("Found_in Far");
+                    { new: true }
+                ).exec();
+                res.send("Exists in FAR");
             }
             else
-                res.send("Not_Found");
+                res.send("Not Found in PV and FAR");
         }
     } catch (error) {
         res.status(500).send({ message: "Internal Server Error2" });
     }
 });
+
 router.post("/pv/:status/:remarks/:id", async (req, res) => {
     const { status, remarks, id } = req.params;
     console.log(remarks);
