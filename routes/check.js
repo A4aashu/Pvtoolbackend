@@ -74,8 +74,8 @@ router.post("/pvupdate", async (req, res) => {
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
     const assetimage = req.body.dataUri;
-    const tagimage = req.body.dataUri1;
-    const serialimage = req.body.dataUri2;
+    const tagimage = req.body.dataUri2;
+    const serialimage = req.body.dataUri1;
     const assettimestamp = req.body.assettimestamp;
     const tagtimestamp = req.body.tagtimestamp;
     const serialtimestamp = req.body.serialtimestamp;
@@ -102,73 +102,51 @@ router.post("/pvupdate", async (req, res) => {
     }
 });
 router.post("/pvnew", async (req, res) => {
-    const { category, description, assetstatus, manufacturer, remarks, tag, serial, site } = req.params;
-
+    const _id = req.body.id;
+    const status = req.body.status;
+    const remarks = req.body.remarks;
+    const latitude = req.body.latitude;
+    const longitude = req.body.longitude;
+    const assetimage = req.body.dataUri;
+    const tagimage = req.body.dataUri2;
+    const serialimage = req.body.dataUri1;
+    const assettimestamp = req.body.assettimestamp;
+    const tagtimestamp = req.body.tagtimestamp;
+    const serialtimestamp = req.body.serialtimestamp;
+    const tagnumber = req.body.tagnumber;
+    const serialnumber = req.body.serialnumber;
+    const assetcate = req.body.assetcate;
+    const assetdesc = req.body.assetdesc;
+    const Manufacturer = req.body.Manufacturer;
+    const site = req.body.site;
+    const reconcilation = req.body.reconcilation;
     try {
-        console.log(category, description, assetstatus, manufacturer, remarks, tag, serial, site, Math.floor(Math.random() * (999999 - 100000 + 1) + 100000), new Date());
-        const tagserialfar1 = await FarModel.findOne({ $or: [{ "Tag Number": tag }, { "Serial no": serial }] });
-        if (tagserialfar1) {
-            const addnew = await PvModel.create({
-                "Asset Id": Math.floor(Math.random() * (999999 - 100000 + 1) + 100000),
-                "Asset Status": assetstatus,
-                "Asset Image": '',
-                "Asset Timestamp": new Date(),
-                "Tag Status": '',
-                "Tag Number": tag,
-                "Tag Image": '',
-                "Tag Timestamp": new Date(),
-                "Serial Number": serial,
-                "Serial Number Image": '',
-                "Serial TimeStamp": new Date(),
-                "Asset Category": category,
-                "Asset Category(Other)": '',
-                "Asset Description": description,
-                "Asset Description (Other)": '',
-                "Manufacturer Name": manufacturer,
-                "Manufacturer Name(Other)": '',
-                "Latitude": '',
-                "Longitude": '',
-                "Site Id": site,
-                "Remark": remarks,
-                "User": 'Aashu',
-                "Reconciliation": '1'
-            });
-            const xyz1 = await FarModel.findByIdAndUpdate(
-                tagserialfar1["_id"],
-                {
-                    "Reconciliation": '1',
-                },
-            );
-            res.send("New Added");
-        }
-        else {
-            const addnew = await PvModel.create({
-                "Asset Id": Math.floor(Math.random() * (999999 - 100000 + 1) + 100000),
-                "Asset Status": assetstatus,
-                "Asset Image": '',
-                "Asset Timestamp": new Date(),
-                "Tag Status": '',
-                "Tag Number": tag,
-                "Tag Image": '',
-                "Tag Timestamp": new Date(),
-                "Serial Number": serial,
-                "Serial Number Image": '',
-                "Serial TimeStamp": new Date(),
-                "Asset Category": category,
-                "Asset Category(Other)": '',
-                "Asset Description": description,
-                "Asset Description (Other)": '',
-                "Manufacturer Name": manufacturer,
-                "Manufacturer Name(Other)": '',
-                "Latitude": '',
-                "Longitude": '',
-                "Site Id": site,
-                "Remark": remarks,
-                "User": 'Aashu',
-                "Reconciliation": '0'
-            })
-            res.send("New Added");
-        }
+        const addnew = await PvModel.create({
+            "Asset Id": Math.floor(Math.random() * (999999 - 100000 + 1) + 100000),
+            "Asset Status": status,
+            "Asset Image": assetimage,
+            "Asset Timestamp": assettimestamp,
+            "Tag Status": '',
+            "Tag Number": tagnumber,
+            "Tag Image": tagimage,
+            "Tag Timestamp": tagtimestamp,
+            "Serial Number": serialnumber,
+            "Serial Number Image": serialimage,
+            "Serial TimeStamp": serialtimestamp,
+            "Asset Category": assetcate,
+            "Asset Category(Other)": '',
+            "Asset Description": assetdesc,
+            "Asset Description (Other)": '',
+            "Manufacturer Name": Manufacturer,
+            "Manufacturer Name(Other)": '',
+            "Latitude": latitude,
+            "Longitude": longitude,
+            "Site Id": site,
+            "Remark": remarks,
+            "User": 'Aashu',
+            "Reconciliation": reconcilation
+        });
+        res.send("New Added");
     } catch (error) {
         res.status(500).send({ message: "Internal Server Error2" });
     }
