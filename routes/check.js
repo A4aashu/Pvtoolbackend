@@ -67,7 +67,6 @@ router.get("/pvcheck", async (req, res) => {
 });
 
 router.post("/pvupdate", async (req, res) => {
-    console.log("in pv");
     const _id = req.body.id;
     const status = req.body.status;
     const remarks = req.body.remarks;
@@ -79,8 +78,6 @@ router.post("/pvupdate", async (req, res) => {
     const assettimestamp = req.body.assettimestamp;
     const tagtimestamp = req.body.tagtimestamp;
     const serialtimestamp = req.body.serialtimestamp;
-    console.log(req.body);
-    console.log(_id);
     try {
         const xyz = await PvModel.findByIdAndUpdate(
             _id,
@@ -147,6 +144,37 @@ router.post("/pvnew", async (req, res) => {
             "Reconciliation": reconcilation
         });
         res.send("New Added");
+    } catch (error) {
+        res.status(500).send({ message: "Internal Server Error2" });
+    }
+});
+router.get("/fartopv", async (req, res) => {
+    try {
+        const fartopv = await FarModel.aggregate([
+            {
+                '$match': {
+                    'Reconciliation': '1'
+                }
+            }
+        ]);
+
+        res.send(fartopv);
+
+    } catch (error) {
+        res.status(500).send({ message: "Internal Server Error2" });
+    }
+});
+router.get("/pvtofar", async (req, res) => {
+    try {
+        const pvtofar1 = await PvModel.aggregate([
+            {
+                '$match': {
+                    'Reconciliation': '1'
+                }
+            }
+        ]);
+        res.send(pvtofar1);
+
     } catch (error) {
         res.status(500).send({ message: "Internal Server Error2" });
     }
