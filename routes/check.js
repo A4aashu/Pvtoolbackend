@@ -66,24 +66,42 @@ router.get("/pvcheck", async (req, res) => {
     }
 });
 
-router.post("/pv/:status/:remarks/:id", async (req, res) => {
-    const { status, remarks, id } = req.params;
-    console.log(remarks);
-    console.log(status);
-    const _id = id;
+router.post("/pvupdate", async (req, res) => {
+    console.log("in pv");
+    const _id = req.body.id;
+    const status = req.body.status;
+    const remarks = req.body.remarks;
+    const latitude = req.body.latitude;
+    const longitude = req.body.longitude;
+    const assetimage = req.body.dataUri;
+    const tagimage = req.body.dataUri1;
+    const serialimage = req.body.dataUri2;
+    const assettimestamp = req.body.assettimestamp;
+    const tagtimestamp = req.body.tagtimestamp;
+    const serialtimestamp = req.body.serialtimestamp;
+    console.log(req.body);
+    console.log(_id);
     try {
         const xyz = await PvModel.findByIdAndUpdate(
             _id,
             {
                 "Asset Status": status,
-                "Remark": remarks
+                "Remark": remarks,
+                "Latitude": latitude,
+                "Longitude": longitude,
+                "Asset Image": assetimage,
+                "Tag Image": tagimage,
+                "Serial Number Image": serialimage,
+                "Asset Timestamp": assettimestamp,
+                "Tag Timestamp": tagtimestamp,
+                "Serial Timestamp": serialtimestamp
             })
         res.send("Updated");
     } catch (error) {
         res.status(500).send({ message: "Internal Server Error2" });
     }
 });
-router.post("/pvnew/:category/:description/:assetstatus/:manufacturer/:remarks/:tag/:serial/:site", async (req, res) => {
+router.post("/pvnew", async (req, res) => {
     const { category, description, assetstatus, manufacturer, remarks, tag, serial, site } = req.params;
 
     try {
