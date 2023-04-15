@@ -150,13 +150,7 @@ router.post("/pvnew", async (req, res) => {
 });
 router.get("/fartopv", async (req, res) => {
     try {
-        const fartopv = await FarModel.aggregate([
-            {
-                '$match': {
-                    'Reconciliation': '1'
-                }
-            }
-        ]);
+        const fartopv = await FarModel.find();
 
         res.send(fartopv);
 
@@ -166,13 +160,7 @@ router.get("/fartopv", async (req, res) => {
 });
 router.get("/pvtofar", async (req, res) => {
     try {
-        const pvtofar1 = await PvModel.aggregate([
-            {
-                '$match': {
-                    'Reconciliation': '1'
-                }
-            }
-        ]);
+        const pvtofar1 = await PvModel.find();
         res.send(pvtofar1);
 
     } catch (error) {
